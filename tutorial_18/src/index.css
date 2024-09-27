@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+input {
+  border-radius: 8px;
+  border: 1px solid rgb(255, 255, 255);
+  background-color: rgb(72, 78, 114);
+  padding: 5px 8px;
+  color: white;
+}
