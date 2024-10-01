@@ -35,7 +35,15 @@ function Form() {
     //   return { name: userResponse.name };
     // },
   });
-  const { register, control, handleSubmit, formState, watch, getValues } = form;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = form;
   const { errors } = formState;
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -89,6 +97,14 @@ function Form() {
     console.log(getValues());
   };
 
+  const setFormValue = () => {
+    setValue("name", "Mirsaid", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
   useEffect(() => {
     // const phoneNumbers = watch('phoneNumbers');
     // const ageAndBirthDate = watch(['age','birthDate'])
@@ -121,8 +137,7 @@ function Form() {
               validate: (fieldValue, otherFieldValues) => {
                 console.log(fieldValue, otherFieldValues);
                 return (
-                  "Mirsaid".toLocaleLowerCase() !== fieldValue ||
-                  "Hell no man is that really u?"
+                  "Mirsaid" !== fieldValue || "Hell no man is that really u?"
                 );
               },
             })}
@@ -297,6 +312,13 @@ function Form() {
           onClick={logFormValues}
         >
           See result
+        </button>
+        <button
+          type="button"
+          className="rounded bg-gray-600 text-white p-2 px-4"
+          onClick={setFormValue}
+        >
+          set name Mirsaid
         </button>
       </form>
       <DevTool control={control} />

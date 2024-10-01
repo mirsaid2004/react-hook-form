@@ -1,6 +1,10 @@
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldErrors,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { useEffect } from "react";
 
 type FormValuesType = {
   name: string;
@@ -19,7 +23,7 @@ let renderCount = 0;
 function Form() {
   const form = useForm<FormValuesType>({
     defaultValues: {
-      name: "Fatman",
+      name: "",
       email: "fatman@gmail.com",
       channel: "YOU_TUBE",
       date: "21.07.2004",
@@ -35,12 +39,25 @@ function Form() {
     //   return { name: userResponse.name };
     // },
   });
-  const { register, control, handleSubmit, formState, watch, getValues } = form;
-  const { errors } = formState;
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = form;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+
+  console.log({ touchedFields, dirtyFields, isDirty });
+
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
     control,
   });
+
   const formatDate = (input: string) => {
     let value = input.replace(/\D/g, "");
 
@@ -83,25 +100,37 @@ function Form() {
     console.log("form submitted", data);
   };
 
+  const onErrorForm = (errors: FieldErrors<FormValuesType>) => {
+    console.log("Form errors", errors);
+  };
+
   const logFormValues = () => {
     console.log(getValues("name"));
     console.log(getValues(["date", "channel"]));
     console.log(getValues());
   };
 
-  useEffect(() => {
-    // const phoneNumbers = watch('phoneNumbers');
-    // const ageAndBirthDate = watch(['age','birthDate'])
-    const formData = watch();
-    console.log("watching", formData);
-  }, [watch]);
+  const setFormValue = () => {
+    setValue("name", "Mirsaid", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
+  // useEffect(() => {
+  //   // const phoneNumbers = watch('phoneNumbers');
+  //   // const ageAndBirthDate = watch(['age','birthDate'])
+  //   const formData = watch();
+  //   console.log("watching", formData);
+  // }, [watch]);
 
   renderCount++;
   return (
     <>
       <form
         className="bg-gray-700 w-full h-screen flex flex-col gap-4 items-center justify-center"
-        onSubmit={handleSubmit(submitForm)}
+        onSubmit={handleSubmit(submitForm, onErrorForm)}
         noValidate
       >
         <h1 className="text-2xl text-white">
@@ -121,8 +150,7 @@ function Form() {
               validate: (fieldValue, otherFieldValues) => {
                 console.log(fieldValue, otherFieldValues);
                 return (
-                  "Mirsaid".toLocaleLowerCase() !== fieldValue ||
-                  "Hell no man is that really u?"
+                  "Mirsaid" !== fieldValue || "Hell no man is that really u?"
                 );
               },
             })}
@@ -145,6 +173,7 @@ function Form() {
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                 message: "Invalid email address",
               },
+              disabled: watch("name") === "",
               validate: {
                 isThatMyEmail(fieldValue) {
                   return (
@@ -297,6 +326,13 @@ function Form() {
           onClick={logFormValues}
         >
           See result
+        </button>
+        <button
+          type="button"
+          className="rounded bg-gray-600 text-white p-2 px-4"
+          onClick={setFormValue}
+        >
+          set name Mirsaid
         </button>
       </form>
       <DevTool control={control} />
