@@ -49,7 +49,17 @@ function Form() {
     getValues,
     setValue,
   } = form;
-  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
+  const {
+    errors,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isValid,
+    isSubmitting,
+    isSubmitSuccessful,
+    isSubmitted,
+    submitCount,
+  } = formState;
 
   console.log({ touchedFields, dirtyFields, isDirty });
 
@@ -124,7 +134,7 @@ function Form() {
   //   const formData = watch();
   //   console.log("watching", formData);
   // }, [watch]);
-
+  console.log({ isSubmitting, isSubmitSuccessful, isSubmitted, submitCount });
   renderCount++;
   return (
     <>
@@ -316,7 +326,7 @@ function Form() {
           <button
             type="submit"
             className="rounded bg-gray-600 text-white p-2 px-4"
-            disabled={!isDirty || !isValid}
+            disabled={!isDirty || !isValid || isSubmitting}
           >
             Submit
           </button>

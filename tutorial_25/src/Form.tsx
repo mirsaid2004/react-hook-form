@@ -5,6 +5,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { useEffect } from "react";
 
 type FormValuesType = {
   name: string;
@@ -48,8 +49,19 @@ function Form() {
     watch,
     getValues,
     setValue,
+    reset,
   } = form;
-  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
+  const {
+    errors,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isValid,
+    isSubmitting,
+    isSubmitSuccessful,
+    isSubmitted,
+    submitCount,
+  } = formState;
 
   console.log({ touchedFields, dirtyFields, isDirty });
 
@@ -124,8 +136,11 @@ function Form() {
   //   const formData = watch();
   //   console.log("watching", formData);
   // }, [watch]);
-
+  console.log({ isSubmitting, isSubmitSuccessful, isSubmitted, submitCount });
   renderCount++;
+  useEffect(() => {
+    if (isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset]);
   return (
     <>
       <form
@@ -308,15 +323,16 @@ function Form() {
         </div>
         <div className="flex justify-end gap-2 w-full max-w-96">
           <button
-            type="reset"
+            type="button"
             className="rounded bg-gray-400 text-white p-2 px-4"
+            onClick={() => reset()}
           >
             Cancel
           </button>
           <button
             type="submit"
             className="rounded bg-gray-600 text-white p-2 px-4"
-            disabled={!isDirty || !isValid}
+            disabled={!isDirty || !isValid || isSubmitting}
           >
             Submit
           </button>
